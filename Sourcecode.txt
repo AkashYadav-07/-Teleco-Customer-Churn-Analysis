@@ -1,0 +1,109 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df1 = pd.read_csv('Customer-Churn.csv') 
+df1
+df1.info()
+
+#replacing the blankwith 0 and no total charges are recorded
+
+df1['TotalCharges'] = df1['TotalCharges'].replace("", "0")
+
+df1.info()
+df1.isnull().sum().sum()
+
+df1.describe()
+
+df1.duplicated().sum()
+
+df1['customerID'].duplicated().sum()
+
+def conv(value):
+    if (value == 1):
+        return "Yes"
+
+    else:
+        return "No"
+
+df1['SeniorCitizen'] = df1['SeniorCitizen'].apply(conv)
+df1.head(40)
+       
+ax=sns.countplot(x ='Churn', data = df1)
+
+ax.bar_label(ax.containers[0])
+plt.title("Count the Customers By Churns")
+plt.show()
+
+count = df1["Churn"].value_counts()
+count
+
+plt.pie(count, labels = count.index, autopct= "%1.1f")
+plt.title("Percentage Of Customes Churn")
+plt.show()
+
+plt.pie(count, labels = count.index, autopct= "%1.1f",explode= [0,0.2], shadow = True)
+plt.title("Percentage Of Customes Churn")
+plt.show()
+
+
+
+plt.figure(figsize=(5,5))
+
+sns.countplot(x = 'gender', data = df1, palette=['Orange','Blue'], hue=df1['Churn'])
+plt.title('Distribution Based on Gender ')
+plt.show()
+
+ax = sns.countplot(x = 'SeniorCitizen', data = df1)
+ax.bar_label(ax.containers[0])
+plt.title('Distribution Based on SeniorCitizen ')
+plt.show()
+
+sns.countplot(x = 'SeniorCitizen', data = df1, palette=['Orange','Blue'], hue=df1['Churn'])
+plt.title('Distribution Based on SeniorCitizen ')
+plt.show()
+
+
+
+# Percentage table
+ct = pd.crosstab(df1['SeniorCitizen'], df1['Churn'], normalize='index') * 100
+
+#  Plot stacked bar chart
+ax = ct.plot(kind='bar', stacked=True, color=['orange', 'blue'])
+
+# Add % labels inside bars
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.1f%%', label_type='center')
+
+# Labels and title
+plt.title('Distribution Based on SeniorCitizen (%)')
+plt.xlabel('SeniorCitizen')
+plt.ylabel('Percentage')
+plt.legend(title='Churn')
+
+plt.show()
+
+plt.figure(figsize = (9,4))
+sns.histplot(x = 'tenure', data = df1, kde = True, bins = 15, hue = 'gender')
+plt.show()
+
+plt.figure(figsize = (9,4))
+sns.histplot(x = 'tenure', data = df1,palette=['Orange','Blue','Red'], kde = True, bins = 50, hue = 'Churn')
+plt.show()
+
+plt.figure(figsize = (9,4))
+sns.histplot(x = 'Contract', data = df1, kde = True, bins = 50, hue = 'Churn')
+plt.show()   
+
+plt.figure(figsize = (9,4))
+sns.histplot(x = 'Contract', data = df1, kde = True, bins = 50, hue = 'Churn')
+plt.show()   
+
+plt.figure(figsize=(9,9))
+ax=sns.countplot(x ='PaymentMethod', data = df1,palette=['Orange','Blue'], hue= 'Churn')
+
+ax.bar_label(ax.containers[0])
+plt.title("Churn Customers By Payment Method")
+plt.xticks(rotation= 45)
+plt.show()
